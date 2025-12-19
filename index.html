@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APY Compounding Optimizer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .chart-container { position: relative; height: 400px; width: 100%; overflow: visible; }
+        .visitor-badge { position: fixed; bottom: 20px; right: 20px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">APY Optimizer</span>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-4 mb-4">
+                    <h3 class="h5 mb-3">Input Parameters</h3>
+                    <form id="calcForm">
+                        <div class="mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select class="form-select" id="currency">
+                                <option value="$">$ (USD)</option>
+                                <option value="€">€ (EUR)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apr" class="form-label">APR (Annual %)</label>
+                            <input type="number" class="form-control" id="apr" step="0.0001" value="0.12" required>
+                            <div class="form-text">e.g., 0.12 for 12%</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="principal" class="form-label">Principal Amount (<span id="currencyPrincipal">$</span>)</label>
+                            <input type="number" class="form-control" id="principal" value="1000" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feePerCompound" class="form-label">Fee per Compound (<span id="currencyFee">$</span>)</label>
+                            <input type="number" class="form-control" id="feePerCompound" step="0.01" value="0.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feePct" class="form-label">Fee % (0-1)</label>
+                            <input type="number" class="form-control" id="feePct" step="0.0001" value="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="maxN" class="form-label">Max Compounding Freq.</label>
+                            <input type="number" class="form-control" id="maxN" value="365" required>
+                            <div class="form-text">Search up to this N per year</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 shadow-sm">Calculate Optimal</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div id="results" style="display:none;">
+                    <div class="card p-4 mb-4 bg-white">
+                        <h3 class="h5 mb-3">Optimization Result</h3>
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Best Strategy Found!</h4>
+                            <p id="optimalText" class="mb-0 fs-5"></p>
+                        </div>
+                        
+                        <div class="chart-container mt-4">
+                            <canvas id="apyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="empty-state" class="text-center py-5">
+                    <p class="text-muted">Enter parameters and click Calculate to see results.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="visitorCounter" class="visitor-badge" style="display: none;">
+        <span class="badge rounded-pill bg-dark p-2 px-3 shadow">
+            Visitors: <span id="count">...</span>
+        </span>
+    </div>
+
+    <script type="module" src="/src/web/main.ts"></script>
+</body>
+</html>
