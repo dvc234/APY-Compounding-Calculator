@@ -6,6 +6,7 @@ import { InterestParams } from "../domain/InterestParams.js";
 import { ChartJsAdapter } from "../presentation/ChartJsAdapter.js";
 import { LocalVisitorCounter } from "../infra/LocalVisitorCounter.js";
 import { parsePercentageInput } from "../utils/parsePercentageInput.js";
+import { ScheduleGenerator } from "../services/ScheduleGenerator.js";
 
 Chart.register(...registerables, annotationPlugin);
 
@@ -15,6 +16,7 @@ const chartAdapter = new ChartJsAdapter();
 const visitorCounter = new LocalVisitorCounter();
 
 let chartInstance: Chart | null = null;
+let scheduleChartInstance: Chart | null = null;
 const currencySelect = document.getElementById('currency') as HTMLSelectElement | null;
 const initialCurrency = currencySelect?.value ?? '$';
 
@@ -44,15 +46,15 @@ async function initVisitorCounter() {
     if (countEl) countEl.innerText = count.toString();
 }
 
-function updateChart(data: any) {
-    const ctx = (document.getElementById('apyChart') as HTMLCanvasElement).getContext('2d');
-    if (!ctx) return;
+function updateChart(targetId: string, existing: Chart | null, data: any): Chart | null {
+    const ctx = (document.getElementById(targetId) as HTMLCanvasElement)?.getContext('2d');
+    if (!ctx) return existing;
 
-    if (chartInstance) {
-        chartInstance.destroy();
+    if (existing) {
+        existing.destroy();
     }
 
-    chartInstance = new Chart(ctx, data);
+    return new Chart(ctx, data);
 }
 
 const form = document.getElementById('calcForm') as HTMLFormElement;
@@ -84,7 +86,11 @@ form.addEventListener('submit', (e) => {
     });
 
     const chartConfig = chartAdapter.renderApyVsCompounds(chartPoints, optimal.n);
-    updateChart(chartConfig);
+    chartInstance = updateChart('apyChart', chartInstance, chartConfig);
+
+    const schedulePoints = ScheduleGenerator.feeAwareTimeline(params.withCompounds(optimal.n), optimal.n);
+    const scheduleConfig = chartAdapter.renderScheduleCurve(schedulePoints, currencySymbol);
+    scheduleChartInstance = updateChart('scheduleChart', scheduleChartInstance, scheduleConfig);
 
     const resultsEl = document.getElementById('results')!;
     resultsEl.style.display = 'block';

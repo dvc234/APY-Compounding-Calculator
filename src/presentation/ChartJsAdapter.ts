@@ -4,10 +4,14 @@ type Dataset = {
   label: string;
   data: { x: number; y: number }[];
   borderColor?: string;
+  backgroundColor?: string;
   pointBackgroundColor?: string;
   pointRadius?: number;
   pointHoverRadius?: number;
   showLine?: boolean;
+  tension?: number;
+  fill?: boolean;
+  cubicInterpolationMode?: "default" | "monotone";
 };
 
 export class ChartJsAdapter implements ChartService {
@@ -126,6 +130,62 @@ export class ChartJsAdapter implements ChartService {
             data: schedule.map(() => 1),
           },
         ],
+      },
+    };
+  }
+
+  renderScheduleCurve(points: { day: number; balance: number }[], currencySymbol: string) {
+    const dataset: Dataset = {
+      label: "Exponential fee-aware schedule",
+      data: points.map((p) => ({ x: p.day, y: p.balance })),
+      borderColor: "#0ea5e9",
+      backgroundColor: "rgba(14, 165, 233, 0.18)",
+      pointBackgroundColor: "#0284c7",
+      tension: 0.45,
+      fill: true,
+      cubicInterpolationMode: "monotone",
+      pointRadius: 3,
+      pointHoverRadius: 5,
+    };
+
+    return {
+      type: "line",
+      data: {
+        datasets: [dataset],
+      },
+      options: {
+        parsing: false,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            type: "linear",
+            min: 0,
+            max: Math.max(...points.map((p) => p.day), 1),
+            title: { display: true, text: "Day of Year" },
+            ticks: { padding: 6 },
+          },
+          y: {
+            title: { display: true, text: `Projected balance (${currencySymbol})` },
+            ticks: {
+              callback: (v: number) => `${currencySymbol}${v.toFixed(2)}`,
+              padding: 6,
+            },
+          },
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => {
+                const day = ctx.parsed.x;
+                const bal = ctx.parsed.y;
+                return `Day ${day}: ${currencySymbol}${bal.toFixed(2)}`;
+              },
+            },
+          },
+          legend: {
+            display: true,
+          },
+        },
       },
     };
   }
