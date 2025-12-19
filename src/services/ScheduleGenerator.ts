@@ -2,7 +2,8 @@ import { InterestParams } from "../domain/InterestParams.js";
 
 export class ScheduleGenerator {
   static evenlySpacedDays(compoundsPerYear: number, daysInYear: number): number[] {
-    const n = Math.max(1, Math.floor(compoundsPerYear));
+    const n = Math.max(0, Math.floor(compoundsPerYear));
+    if (n === 0) return [];
     const step = daysInYear / n;
     const schedule: number[] = [];
 
@@ -21,11 +22,19 @@ export class ScheduleGenerator {
   static feeAwareTimeline(params: InterestParams, targetCompounds?: number): { day: number; balance: number }[] {
     const daysInYear = params.daysInYear;
     const dailyRate = params.apr / daysInYear;
-    const n = Math.max(1, (targetCompounds ?? params.compoundsPerYear) || 1);
+    const n = Math.max(0, Math.floor((targetCompounds ?? params.compoundsPerYear) || 0));
 
     let balance = Math.max(0, params.principal);
     let day = 0;
     const points: { day: number; balance: number }[] = [{ day, balance }];
+
+    if (n === 0) {
+      if (day < daysInYear) {
+        const growth = balance * Math.pow(1 + dailyRate, daysInYear - day) - balance;
+        points.push({ day: daysInYear, balance: balance + growth });
+      }
+      return points;
+    }
 
     // If no fees apply, fall back to an even cadence (keeps previous expectations/tests)
     const isFeeFree = params.feePerCompound === 0 && params.feePct === 0;

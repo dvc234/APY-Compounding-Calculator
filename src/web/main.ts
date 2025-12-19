@@ -39,6 +39,29 @@ function formatCurrency(value: number, symbol: string): string {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value);
 }
 
+function renderCompoundingList(points: { day: number; balance: number }[], currencySymbol: string, optimalN: number) {
+    const list = document.getElementById('scheduleList');
+    const summary = document.getElementById('scheduleListSummary');
+    if (!list || !summary) return;
+
+    list.innerHTML = '';
+
+    if (optimalN === 0) {
+        summary.textContent = 'No compounding is required for the optimal strategy.';
+        return;
+    }
+
+    const compPoints = points.slice(1);
+    summary.textContent = `Compound ${compPoints.length} time${compPoints.length === 1 ? '' : 's'} at these checkpoints:`;
+
+    compPoints.forEach((point, idx) => {
+        const item = document.createElement('li');
+        item.className = 'list-group-item d-flex justify-content-between align-items-center';
+        item.innerHTML = `<span class="text-muted">#${idx + 1} — Day ${point.day}</span><span class="fw-semibold">${formatCurrency(point.balance, currencySymbol)}</span>`;
+        list.appendChild(item);
+    });
+}
+
 async function initVisitorCounter() {
     await visitorCounter.increment();
     const count = await visitorCounter.getCount();
@@ -91,6 +114,7 @@ form.addEventListener('submit', (e) => {
     const schedulePoints = ScheduleGenerator.feeAwareTimeline(params.withCompounds(optimal.n), optimal.n);
     const scheduleConfig = chartAdapter.renderScheduleCurve(schedulePoints, currencySymbol);
     scheduleChartInstance = updateChart('scheduleChart', scheduleChartInstance, scheduleConfig);
+    renderCompoundingList(schedulePoints, currencySymbol, optimal.n);
 
     const resultsEl = document.getElementById('results')!;
     resultsEl.style.display = 'block';
