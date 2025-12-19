@@ -6,18 +6,127 @@
     <title>APY Compounding Optimizer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        :root {
+            --primary: #2563eb;
+            --primary-soft: rgba(37, 99, 235, 0.08);
+            --accent: #0ea5e9;
+            --muted: #6b7280;
+        }
+
+        body {
+            background: radial-gradient(circle at 15% 20%, rgba(14,165,233,0.14), transparent 25%),
+                        radial-gradient(circle at 85% 10%, rgba(79,70,229,0.16), transparent 25%),
+                        linear-gradient(135deg, #f8fafc 0%, #f1f5f9 35%, #eef2ff 100%);
+            color: #0f172a;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            backdrop-filter: blur(8px);
+        }
+
         .chart-container { position: relative; height: 400px; width: 100%; overflow: visible; }
         .visitor-badge { position: fixed; bottom: 20px; right: 20px; }
+
+        .navbar-gradient {
+            background: linear-gradient(90deg, #1d4ed8 0%, #0ea5e9 50%, #22d3ee 100%);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(14, 165, 233, 0.12));
+            border: 1px solid rgba(37, 99, 235, 0.16);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.45), transparent 35%),
+                        radial-gradient(circle at 80% 20%, rgba(14,165,233,0.35), transparent 30%);
+            pointer-events: none;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: #0f172a;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .feature-card {
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(255,255,255,0.95);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 38px rgba(15, 23, 42, 0.12);
+        }
+
+        .section-title {
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 0.78rem;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-primary mb-4">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">APY Optimizer</span>
+    <nav class="navbar navbar-dark navbar-gradient mb-4">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <span class="navbar-brand mb-0 h1 fw-semibold">APY Optimizer</span>
+            <div class="pill">
+                <span class="badge bg-light text-dark">New</span>
+                Fee-aware compounding strategies
+            </div>
         </div>
     </nav>
+
+    <div class="container mb-4">
+        <div class="hero p-4 p-md-5 mb-4">
+            <div class="row align-items-center position-relative" style="z-index:1;">
+                <div class="col-md-7">
+                    <p class="section-title mb-2">Smarter growth</p>
+                    <h1 class="display-6 fw-bold mb-3">Optimize your APY with fee-aware compounding</h1>
+                    <p class="lead text-muted mb-4">Model the true impact of fees, find the best compounding cadence, and visualize your balance over time.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="pill"><span class="text-primary">●</span> Interactive charts</span>
+                        <span class="pill"><span class="text-primary">●</span> CLI + Web</span>
+                        <span class="pill"><span class="text-primary">●</span> Netlify-ready</span>
+                    </div>
+                </div>
+                <div class="col-md-5 mt-4 mt-md-0">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <p class="section-title mb-2">How it works</p>
+                            <h5 class="fw-semibold mb-3">Enter APR, fees, and search range</h5>
+                            <p class="text-muted mb-3">We brute-force across compounding frequencies, adjust for fixed and percent fees, then highlight the best cadence.</p>
+                            <ul class="list-unstyled small text-muted mb-0">
+                                <li class="mb-2">✓ Real APY after fees</li>
+                                <li class="mb-2">✓ Fee-aware exponential schedule</li>
+                                <li>✓ Exportable CLI for automation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container pb-5">
         <div class="row">

@@ -1,3 +1,7 @@
+/**
+ * Normalizes APR input into a decimal (e.g., "12%" -> 0.12, "0.12" -> 0.12).
+ * Accepts commas or dots as decimal separators and gracefully handles raw numbers.
+ */
 export function parsePercentageInput(value: string | number): number {
   if (typeof value === "number") {
     return value > 1 ? value / 100 : value;

@@ -3,6 +3,11 @@ import { CalculationResult } from "../domain/CalculationResult.js";
 import { ApyCalculator } from "./ApyCalculator.js";
 
 export class CompoundFeeApyCalculator implements ApyCalculator {
+  /**
+   * Calculates fee-adjusted APY metrics for a given compounding frequency.
+   * Returns both gross APY (ignoring fees) and the real APY after deducting
+   * fixed and percentage-based fees at every compounding step.
+   */
   calculate(params: InterestParams): CalculationResult {
     const n = Math.floor(params.compoundsPerYear);
     const principal = params.principal;
@@ -56,6 +61,9 @@ export class CompoundFeeApyCalculator implements ApyCalculator {
     };
   }
 
+  /**
+   * Standard compound interest formula without fees.
+   */
   private grossApy(apr: number, n: number): number {
     return Math.pow(1 + apr / n, n) - 1;
   }

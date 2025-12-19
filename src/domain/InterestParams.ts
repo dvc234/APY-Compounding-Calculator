@@ -1,3 +1,6 @@
+/**
+ * Raw inputs used to create sanitized interest parameters.
+ */
 export interface InterestParamsProps {
   apr: number;
   compoundsPerYear: number;
@@ -7,6 +10,10 @@ export interface InterestParamsProps {
   daysInYear?: number;
 }
 
+/**
+ * Immutable view of the scenario being optimized. Inputs are normalized to safe,
+ * non-negative values so downstream calculators can assume valid ranges.
+ */
 export class InterestParams {
   readonly apr: number;
   readonly compoundsPerYear: number;
@@ -31,6 +38,9 @@ export class InterestParams {
     this.daysInYear = daysInYear > 0 ? daysInYear : 365;
   }
 
+  /**
+   * Returns a copy with a different compounding frequency.
+   */
   withCompounds(compoundsPerYear: number): InterestParams {
     return new InterestParams({
       apr: this.apr,
@@ -42,6 +52,9 @@ export class InterestParams {
     });
   }
 
+  /**
+   * Returns a copy with a different principal value.
+   */
   withPrincipal(principal: number): InterestParams {
     return new InterestParams({
       apr: this.apr,
