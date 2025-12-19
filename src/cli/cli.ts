@@ -2,6 +2,7 @@
 import { CompoundFeeApyCalculator } from "../services/CompoundFeeApyCalculator.js";
 import { BruteForceOptimizer } from "../services/BruteForceOptimizer.js";
 import { InterestParams } from "../domain/InterestParams.js";
+import { parsePercentageInput } from "../utils/parsePercentageInput.js";
 
 interface CliOptions {
   apr: number;
@@ -34,7 +35,7 @@ function parseArgs(argv: string[]): CliOptions {
     const numeric = Number(value);
     switch (flag) {
       case "apr":
-        defaults.apr = numeric;
+        defaults.apr = parsePercentageInput(value);
         break;
       case "compounds":
       case "compoundsPerYear":

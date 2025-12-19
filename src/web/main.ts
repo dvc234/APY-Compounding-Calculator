@@ -5,6 +5,7 @@ import { BruteForceOptimizer } from "../services/BruteForceOptimizer.js";
 import { InterestParams } from "../domain/InterestParams.js";
 import { ChartJsAdapter } from "../presentation/ChartJsAdapter.js";
 import { LocalVisitorCounter } from "../infra/LocalVisitorCounter.js";
+import { parsePercentageInput } from "../utils/parsePercentageInput.js";
 
 Chart.register(...registerables, annotationPlugin);
 
@@ -59,7 +60,8 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const currencySymbol = currencySelect?.value ?? '$';
-    const apr = parseFloat((document.getElementById('apr') as HTMLInputElement).value);
+    const aprInput = (document.getElementById('apr') as HTMLInputElement).value;
+    const apr = parsePercentageInput(aprInput);
     const principal = parseFloat((document.getElementById('principal') as HTMLInputElement).value);
     const feePerCompound = parseFloat((document.getElementById('feePerCompound') as HTMLInputElement).value);
     const feePct = parseFloat((document.getElementById('feePct') as HTMLInputElement).value);
